@@ -53,4 +53,26 @@ defmodule RPS.RoundTest do
       assert round.result == :second
     end
   end
+
+  describe "paper beats rock in update_result/1 and" do
+    test "result is `:first` if the first player chose `:paper`" do
+      round =
+        Round.new()
+        |> Round.player_choice(:first, :paper)
+        |> Round.player_choice(:second, :rock)
+        |> Round.update_result()
+
+      assert round.result == :first
+    end
+
+    test "result is `:second` if the second player chose `:paper`" do
+      round =
+        Round.new()
+        |> Round.player_choice(:first, :rock)
+        |> Round.player_choice(:second, :paper)
+        |> Round.update_result()
+
+      assert round.result == :second
+    end
+  end
 end
