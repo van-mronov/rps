@@ -1,4 +1,8 @@
 defmodule RPS.Round do
+  @moduledoc """
+  Module implements a basic logic of the Rock-Paper-Scissors game round.
+  """
+
   defstruct first_player_choice: nil, second_player_choice: nil, result: nil
 
   alias RPS.Round
@@ -15,7 +19,7 @@ defmodule RPS.Round do
   def new, do: %Round{}
 
   @doc """
-  Updates player's choice.
+  Updates the player's choice.
 
   ## Examples
 
@@ -32,7 +36,7 @@ defmodule RPS.Round do
   def player_choice(round, :second, choice), do: %{round | second_player_choice: choice}
 
   @doc """
-  Updates round's result.
+  Updates the round's result.
 
   ## Examples
 
