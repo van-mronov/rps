@@ -1,8 +1,11 @@
 defmodule RPS.Game do
-
   alias RPS.{Game, Round}
 
-  defstruct current_round: %Round{}, rounds: [], first_player_score: 0, second_player_score: 0, result: nil
+  defstruct current_round: %Round{},
+            rounds: [],
+            first_player_score: 0,
+            second_player_score: 0,
+            result: nil
 
   @duration 10
 
@@ -26,7 +29,11 @@ defmodule RPS.Game do
     |> maybe_update_result()
   end
 
-  defp update_round_with_player_choice(%Game{current_round: round} = game, player_position, choice) do
+  defp update_round_with_player_choice(
+         %Game{current_round: round} = game,
+         player_position,
+         choice
+       ) do
     %{game | current_round: Round.player_choice(round, player_position, choice)}
   end
 
@@ -34,11 +41,15 @@ defmodule RPS.Game do
     %{game | current_round: Round.update_result(round)}
   end
 
-  defp update_scores(%Game{current_round: %Round{result: :first}, first_player_score: score} = game) do
+  defp update_scores(
+         %Game{current_round: %Round{result: :first}, first_player_score: score} = game
+       ) do
     %{game | first_player_score: score + 1}
   end
 
-  defp update_scores(%Game{current_round: %Round{result: :second}, second_player_score: score} = game) do
+  defp update_scores(
+         %Game{current_round: %Round{result: :second}, second_player_score: score} = game
+       ) do
     %{game | second_player_score: score + 1}
   end
 
@@ -46,7 +57,8 @@ defmodule RPS.Game do
     game
   end
 
-  defp finish_round(%Game{current_round: round, rounds: rounds} = game) when length(rounds) == @duration - 1 do
+  defp finish_round(%Game{current_round: round, rounds: rounds} = game)
+       when length(rounds) == @duration - 1 do
     %{game | current_round: nil, rounds: [round | rounds]}
   end
 
@@ -62,7 +74,11 @@ defmodule RPS.Game do
     %{game | result: :draw}
   end
 
-  defp maybe_update_result(%Game{first_player_score: first_player_score, second_player_score: second_player_score} = game) when first_player_score > second_player_score do
+  defp maybe_update_result(
+         %Game{first_player_score: first_player_score, second_player_score: second_player_score} =
+           game
+       )
+       when first_player_score > second_player_score do
     %{game | result: :first}
   end
 
