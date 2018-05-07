@@ -6,7 +6,11 @@ defmodule RPS.RoundTest do
 
   describe "new/0" do
     test "returns a blank round" do
-      assert Round.new() == %Round{first_player_choice: nil, second_player_choice: nil, result: nil}
+      assert Round.new() == %Round{
+               first_player_choice: nil,
+               second_player_choice: nil,
+               result: nil
+             }
     end
   end
 
@@ -73,6 +77,38 @@ defmodule RPS.RoundTest do
         |> Round.update_result()
 
       assert round.result == :second
+    end
+  end
+
+  describe "update_result/1 set result as `:draw`" do
+    test "if both players chose `:rock`" do
+      round =
+        Round.new()
+        |> Round.player_choice(:first, :rock)
+        |> Round.player_choice(:second, :rock)
+        |> Round.update_result()
+
+      assert round.result == :draw
+    end
+
+    test "if both players chose `:paper`" do
+      round =
+        Round.new()
+        |> Round.player_choice(:first, :paper)
+        |> Round.player_choice(:second, :paper)
+        |> Round.update_result()
+
+      assert round.result == :draw
+    end
+
+    test "if both players chose `:scissors`" do
+      round =
+        Round.new()
+        |> Round.player_choice(:first, :scissors)
+        |> Round.player_choice(:second, :scissors)
+        |> Round.update_result()
+
+      assert round.result == :draw
     end
   end
 end
