@@ -36,15 +36,13 @@ defmodule RPS.Round do
 
   ## Examples
 
-      iex> round = RPS.Round.new()
-      iex> round
+      iex> RPS.Round.new()
       ...> |> RPS.Round.player_choice(:first, :rock)
       ...> |> RPS.Round.player_choice(:second, :rock)
       ...> |> RPS.Round.update_result()
       #Round<first_player_choice: :rock, second_player_choice: :rock, result: :draw>
 
-      iex> round = RPS.Round.new()
-      iex> round
+      iex> RPS.Round.new()
       ...> |> RPS.Round.player_choice(:first, :rock)
       ...> |> RPS.Round.player_choice(:second, :scissors)
       ...> |> RPS.Round.update_result()
