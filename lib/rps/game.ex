@@ -85,4 +85,20 @@ defmodule RPS.Game do
   defp maybe_update_result(game) do
     %{game | result: :second}
   end
+
+  @doc false
+  def to_doc(%Game{
+        current_round: round,
+        first_player_score: fps,
+        second_player_score: sps,
+        result: result
+      }) do
+    "current_round: #{inspect(round)}, first_player_score: #{inspect(fps)}, second_player_score: #{
+      inspect(sps)
+    }, result: #{inspect(result)}"
+  end
+end
+
+defimpl Inspect, for: RPS.Game do
+  def inspect(game, _opts), do: "#Game<" <> RPS.Game.to_doc(game) <> ">"
 end
