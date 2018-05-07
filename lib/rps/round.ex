@@ -12,17 +12,24 @@ defmodule RPS.Round do
       #Round<first_player_choice: nil, second_player_choice: nil, result: nil>
 
   """
-  def new do
-    %Round{}
-  end
+  def new, do: %Round{}
 
-  def player_choice(round, :first, choice) do
-    %{round | first_player_choice: choice}
-  end
+  @doc """
+  Updates player's choice.
 
-  def player_choice(round, :second, choice) do
-    %{round | second_player_choice: choice}
-  end
+  ## Examples
+
+      iex> round = RPS.Round.new()
+      iex> RPS.Round.player_choice(round, :first, :rock)
+      #Round<first_player_choice: :rock, second_player_choice: nil, result: nil>
+
+      iex> round = RPS.Round.new()
+      iex> RPS.Round.player_choice(round, :second, :paper)
+      #Round<first_player_choice: nil, second_player_choice: :paper, result: nil>
+
+  """
+  def player_choice(round, :first, choice), do: %{round | first_player_choice: choice}
+  def player_choice(round, :second, choice), do: %{round | second_player_choice: choice}
 
   def update_result(%Round{first_player_choice: choice, second_player_choice: choice} = round),
     do: %{round | result: :draw}
@@ -46,7 +53,5 @@ defmodule RPS.Round do
 end
 
 defimpl Inspect, for: RPS.Round do
-  def inspect(round, _opts) do
-    "#Round<" <> RPS.Round.to_doc(round) <> ">"
-  end
+  def inspect(round, _opts), do: "#Round<" <> RPS.Round.to_doc(round) <> ">"
 end
