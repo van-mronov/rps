@@ -31,6 +31,26 @@ defmodule RPS.Round do
   def player_choice(round, :first, choice), do: %{round | first_player_choice: choice}
   def player_choice(round, :second, choice), do: %{round | second_player_choice: choice}
 
+  @doc """
+  Updates round's result.
+
+  ## Examples
+
+      iex> round = RPS.Round.new()
+      iex> round
+      ...> |> RPS.Round.player_choice(:first, :rock)
+      ...> |> RPS.Round.player_choice(:second, :rock)
+      ...> |> RPS.Round.update_result()
+      #Round<first_player_choice: :rock, second_player_choice: :rock, result: :draw>
+
+      iex> round = RPS.Round.new()
+      iex> round
+      ...> |> RPS.Round.player_choice(:first, :rock)
+      ...> |> RPS.Round.player_choice(:second, :scissors)
+      ...> |> RPS.Round.update_result()
+      #Round<first_player_choice: :rock, second_player_choice: :scissors, result: :first>
+
+  """
   def update_result(%Round{first_player_choice: choice, second_player_choice: choice} = round),
     do: %{round | result: :draw}
 
