@@ -23,10 +23,31 @@ defmodule RPS.GameServer do
     {:via, Registry, {RPS.GameRegistry, game_name}}
   end
 
+  @doc """
+  Returns the info of the game registered under the given `game_name`.
+  """
+  def info(game_name) do
+    GenServer.call(via_tuple(game_name), :info)
+  end
+
   # Server Callbacks
 
   def init(game_name) do
     Logger.info("Spawned game server process named '#{game_name}'.")
     {:ok, RPS.Game.new()}
+  end
+
+  def handle_call(:info, _from, game) do
+    {:reply, get_info(game), game}
+  end
+
+  defp get_info(game) do
+    %{
+      current_round: game.current_round,
+      rounds: game.rounds,
+      first_player_score: game.first_player_score,
+      second_player_score: game.second_player_score,
+      result: game.result
+    }
   end
 end
