@@ -40,6 +40,19 @@ defmodule RPS.GameTest do
     end
   end
 
+  describe "second_player_choice/2 of the 10th round" do
+    test "finishes the game" do
+      game =
+        Enum.reduce(1..10, RPS.Game.new(), fn _round_number, game ->
+          game
+          |> RPS.Game.first_player_choice(:rock)
+          |> RPS.Game.second_player_choice(:scissors)
+        end)
+
+      assert game.current_round == nil
+    end
+  end
+
   describe "second_player_choice/2 increments the first player's score" do
     test "if he/she chose `:rock` and the second player chose `:scissors`" do
       game =
