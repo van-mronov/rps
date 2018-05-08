@@ -29,6 +29,15 @@ defmodule RPS.GameTest do
                result: :first
              }
     end
+
+    test "starts the new round" do
+      game =
+        RPS.Game.new()
+        |> RPS.Game.first_player_choice(:rock)
+        |> RPS.Game.second_player_choice(:scissors)
+
+      assert game.current_round == %Round{}
+    end
   end
 
   describe "second_player_choice/2 increments the first player's score" do
