@@ -18,13 +18,9 @@ defmodule RPS.Game do
       #Game<current_round: #Round<first_player_choice: nil, second_player_choice: nil, result: nil>, first_player_score: 0, second_player_score: 0, result: nil>
 
   """
-  def new do
-    %Game{}
-  end
+  def new, do: %Game{}
 
-  def first_player_choice(game, choice) do
-    update_round_with_player_choice(game, :first, choice)
-  end
+  def first_player_choice(game, choice), do: update_round_with_player_choice(game, :first, choice)
 
   def second_player_choice(game, choice) do
     game
@@ -33,6 +29,18 @@ defmodule RPS.Game do
     |> update_scores()
     |> finish_round()
     |> maybe_update_result()
+  end
+
+  @doc false
+  def to_doc(%Game{
+        current_round: round,
+        first_player_score: fps,
+        second_player_score: sps,
+        result: result
+      }) do
+    "current_round: #{inspect(round)}, first_player_score: #{inspect(fps)}, second_player_score: #{
+      inspect(sps)
+    }, result: #{inspect(result)}"
   end
 
   defp update_round_with_player_choice(
@@ -90,18 +98,6 @@ defmodule RPS.Game do
 
   defp maybe_update_result(game) do
     %{game | result: :second}
-  end
-
-  @doc false
-  def to_doc(%Game{
-        current_round: round,
-        first_player_score: fps,
-        second_player_score: sps,
-        result: result
-      }) do
-    "current_round: #{inspect(round)}, first_player_score: #{inspect(fps)}, second_player_score: #{
-      inspect(sps)
-    }, result: #{inspect(result)}"
   end
 end
 
