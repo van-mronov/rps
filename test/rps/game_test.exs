@@ -51,6 +51,24 @@ defmodule RPS.GameTest do
 
       assert game.current_round == nil
     end
+
+    test "marks the first player as a winner if he/she won more rounds than the second player" do
+      game =
+        Enum.reduce(1..6, RPS.Game.new(), fn _round_number, game ->
+          game
+          |> RPS.Game.first_player_choice(:rock)
+          |> RPS.Game.second_player_choice(:scissors)
+        end)
+
+      game =
+        Enum.reduce(1..4, game, fn _round_number, game ->
+          game
+          |> RPS.Game.first_player_choice(:paper)
+          |> RPS.Game.second_player_choice(:scissors)
+        end)
+
+      assert game.result == :first
+    end
   end
 
   describe "second_player_choice/2 increments the first player's score" do
