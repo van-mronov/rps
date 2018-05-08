@@ -24,6 +24,16 @@ defmodule RPS.Game do
   """
   def new, do: %Game{}
 
+  @doc """
+  Updates the first player's choice for the current round.
+
+  ## Examples
+
+      iex> game = RPS.Game.new()
+      iex> RPS.Game.first_player_choice(game, :rock)
+      #Game<current_round: #Round<first_player_choice: :rock, second_player_choice: nil, result: nil>, first_player_score: 0, second_player_score: 0, result: nil>
+
+  """
   def first_player_choice(game, choice), do: update_round_with_player_choice(game, :first, choice)
 
   def second_player_choice(game, choice) do
