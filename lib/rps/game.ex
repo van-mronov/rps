@@ -1,4 +1,8 @@
 defmodule RPS.Game do
+  @moduledoc """
+  Module implements a basic logic of the 10-rounds Rock-Paper-Scissors game.
+  """
+
   alias RPS.{Game, Round}
 
   defstruct current_round: %Round{},
