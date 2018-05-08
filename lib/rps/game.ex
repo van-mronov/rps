@@ -36,6 +36,17 @@ defmodule RPS.Game do
   """
   def first_player_choice(game, choice), do: update_round_with_player_choice(game, :first, choice)
 
+  @doc """
+  Updates the second player's choice and finishes the current round. Finishes the game if it was the last round.
+
+  ## Examples
+
+      iex> RPS.Game.new()
+      ...> |> RPS.Game.first_player_choice(:rock)
+      ...> |> RPS.Game.second_player_choice(:scissors)
+      #Game<current_round: #Round<first_player_choice: nil, second_player_choice: nil, result: nil>, first_player_score: 1, second_player_score: 0, result: nil>
+
+  """
   def second_player_choice(game, choice) do
     game
     |> update_round_with_player_choice(:second, choice)
