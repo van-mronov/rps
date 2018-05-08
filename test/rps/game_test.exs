@@ -87,6 +87,24 @@ defmodule RPS.GameTest do
 
       assert game.result == :second
     end
+
+    test "sets the result of the game as `:draw` if both players won 5 rounds" do
+      game =
+        Enum.reduce(1..5, RPS.Game.new(), fn _round_number, game ->
+          game
+          |> RPS.Game.first_player_choice(:rock)
+          |> RPS.Game.second_player_choice(:scissors)
+        end)
+
+      game =
+        Enum.reduce(1..5, game, fn _round_number, game ->
+          game
+          |> RPS.Game.first_player_choice(:paper)
+          |> RPS.Game.second_player_choice(:scissors)
+        end)
+
+      assert game.result == :draw
+    end
   end
 
   describe "second_player_choice/2 increments the first player's score" do
