@@ -1,15 +1,9 @@
 defmodule RPS do
-  @moduledoc false
+  @moduledoc """
+  RPS keeps the contexts that define your domain
+  and business logic.
 
-  use Application
-
-  def start(_type, _args) do
-    children = [
-      {Registry, keys: :unique, name: RPS.GameRegistry},
-      RPS.GameSupervisor
-    ]
-
-    opts = [strategy: :one_for_one, name: Bingo.Supervisor]
-    Supervisor.start_link(children, opts)
-  end
+  Contexts are also responsible for managing your data, regardless
+  if it comes from the database, an external API or others.
+  """
 end
