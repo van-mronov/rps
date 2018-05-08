@@ -11,6 +11,12 @@ defmodule RPS.Game do
 
   @doc """
   Creates a new game.
+
+  ## Examples
+
+      iex> RPS.Game.new()
+      #Game<current_round: #Round<first_player_choice: nil, second_player_choice: nil, result: nil>, first_player_score: 0, second_player_score: 0, result: nil>
+
   """
   def new do
     %Game{}
