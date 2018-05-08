@@ -16,7 +16,7 @@ defmodule RPS.GameTest do
     end
   end
 
-  describe "second_player_choice/2 increments first player score" do
+  describe "second_player_choice/2 increments the first player's score" do
     test "if he/she chose `:rock` and the second player chose `:scissors`" do
       game =
         RPS.Game.new()
@@ -42,6 +42,35 @@ defmodule RPS.GameTest do
         |> RPS.Game.second_player_choice(:rock)
 
       assert game.first_player_score == 1
+    end
+  end
+
+  describe "second_player_choice/2 increments the second player's score" do
+    test "if he/she chose `:rock` and the first player chose `:scissors`" do
+      game =
+        RPS.Game.new()
+        |> RPS.Game.first_player_choice(:scissors)
+        |> RPS.Game.second_player_choice(:rock)
+
+      assert game.second_player_score == 1
+    end
+
+    test "if he/she chose `:scissors` and the first player chose `:paper`" do
+      game =
+        RPS.Game.new()
+        |> RPS.Game.first_player_choice(:paper)
+        |> RPS.Game.second_player_choice(:scissors)
+
+      assert game.second_player_score == 1
+    end
+
+    test "if he/she chose `:paper` and the first player chose `:rock`" do
+      game =
+        RPS.Game.new()
+        |> RPS.Game.first_player_choice(:rock)
+        |> RPS.Game.second_player_choice(:paper)
+
+      assert game.second_player_score == 1
     end
   end
 end
