@@ -1,10 +1,15 @@
 defmodule RpsWeb.UserController do
   use RpsWeb, :controller
 
+  import RpsWeb.Authorize
   alias Rps.Accounts
   alias Rps.Accounts.User
 
   action_fallback RpsWeb.FallbackController
+
+  # the following plugs are defined in the controllers/authorize.ex file
+  plug(:user_check when action in [:index, :show])
+  plug(:id_check when action in [:update, :delete])
 
   def index(conn, _params) do
     users = Accounts.list_users()
