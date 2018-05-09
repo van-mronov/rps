@@ -34,6 +34,11 @@ defmodule RPS.AccountsTest do
       assert user.name == "Ivan"
     end
 
+    test "create_user/1 returns a user changeset with hashed password" do
+      {:ok, %User{} = user} = Accounts.create_user(@valid_attrs)
+      assert Comeonin.Bcrypt.checkpw(user.password, user.password_digest)
+    end
+
     test "create_user/1 with invalid data returns error changeset" do
       assert {:error, %Ecto.Changeset{}} = Accounts.create_user(@invalid_attrs)
     end
