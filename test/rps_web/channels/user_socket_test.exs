@@ -20,4 +20,11 @@ defmodule RpsWeb.UserSocketTest do
       assert socket.assigns.user_id == user.id
     end
   end
+
+  describe "id/1" do
+    test "allows to identify all sockets for a given user" , %{user: user, token: token} do
+      {:ok, socket} = connect(UserSocket, %{"access_token" => token})
+      assert socket.id == "user_socket:#{user.id}"
+    end
+  end
 end
