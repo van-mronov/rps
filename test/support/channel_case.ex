@@ -1,4 +1,4 @@
-defmodule RPSWeb.ChannelCase do
+defmodule RpsWeb.ChannelCase do
   @moduledoc """
   This module defines the test case to be used by
   channel tests.
@@ -21,15 +21,15 @@ defmodule RPSWeb.ChannelCase do
       use Phoenix.ChannelTest
 
       # The default endpoint for testing
-      @endpoint RPSWeb.Endpoint
+      @endpoint RpsWeb.Endpoint
     end
   end
 
 
   setup tags do
-    :ok = Ecto.Adapters.SQL.Sandbox.checkout(RPS.Repo)
+    :ok = Ecto.Adapters.SQL.Sandbox.checkout(Rps.Repo)
     unless tags[:async] do
-      Ecto.Adapters.SQL.Sandbox.mode(RPS.Repo, {:shared, self()})
+      Ecto.Adapters.SQL.Sandbox.mode(Rps.Repo, {:shared, self()})
     end
     :ok
   end

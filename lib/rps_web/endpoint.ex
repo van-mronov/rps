@@ -1,7 +1,7 @@
-defmodule RPSWeb.Endpoint do
+defmodule RpsWeb.Endpoint do
   use Phoenix.Endpoint, otp_app: :rps
 
-  socket "/socket", RPSWeb.UserSocket
+  socket "/socket", RpsWeb.UserSocket
 
   # Serve at "/" the static files from "priv/static" directory.
   #
@@ -35,7 +35,7 @@ defmodule RPSWeb.Endpoint do
     key: "_rps_key",
     signing_salt: "Ze6NPp3I"
 
-  plug RPSWeb.Router
+  plug RpsWeb.Router
 
   @doc """
   Callback invoked for dynamically configuring the endpoint.

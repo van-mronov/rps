@@ -1,12 +1,12 @@
-defmodule RPS.Accounts do
+defmodule Rps.Accounts do
   @moduledoc """
   The Accounts context.
   """
 
   import Ecto.Query, warn: false
-  alias RPS.Repo
+  alias Rps.Repo
 
-  alias RPS.Accounts.User
+  alias Rps.Accounts.User
 
   @doc """
   Returns the list of users.
@@ -36,6 +36,18 @@ defmodule RPS.Accounts do
 
   """
   def get_user!(id), do: Repo.get!(User, id)
+
+  @doc """
+  Gets a single user.
+  """
+  def get(id), do: Repo.get(User, id)
+
+  @doc """
+  Gets a single user by name.
+  """
+  def get_by(%{"name" => name}) do
+    Repo.get_by(User, name: name)
+  end
 
   @doc """
   Creates a user.

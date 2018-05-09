@@ -1,10 +1,10 @@
-defmodule RPSWeb.UserController do
-  use RPSWeb, :controller
+defmodule RpsWeb.UserController do
+  use RpsWeb, :controller
 
-  alias RPS.Accounts
-  alias RPS.Accounts.User
+  alias Rps.Accounts
+  alias Rps.Accounts.User
 
-  action_fallback RPSWeb.FallbackController
+  action_fallback RpsWeb.FallbackController
 
   def index(conn, _params) do
     users = Accounts.list_users()

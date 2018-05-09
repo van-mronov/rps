@@ -1,9 +1,9 @@
-defmodule RPS.Game do
+defmodule Rps.Game do
   @moduledoc """
   Module implements a basic logic of the 10-rounds Rock-Paper-Scissors game.
   """
 
-  alias RPS.{Game, Round}
+  alias Rps.{Game, Round}
 
   defstruct current_round: %Round{},
             rounds: [],
@@ -18,7 +18,7 @@ defmodule RPS.Game do
 
   ## Examples
 
-      iex> RPS.Game.new()
+      iex> Rps.Game.new()
       #Game<current_round: #Round<first_player_choice: nil, second_player_choice: nil, result: nil>, first_player_score: 0, second_player_score: 0, result: nil>
 
   """
@@ -29,8 +29,8 @@ defmodule RPS.Game do
 
   ## Examples
 
-      iex> game = RPS.Game.new()
-      iex> RPS.Game.first_player_choice(game, :rock)
+      iex> game = Rps.Game.new()
+      iex> Rps.Game.first_player_choice(game, :rock)
       #Game<current_round: #Round<first_player_choice: :rock, second_player_choice: nil, result: nil>, first_player_score: 0, second_player_score: 0, result: nil>
 
   """
@@ -41,9 +41,9 @@ defmodule RPS.Game do
 
   ## Examples
 
-      iex> RPS.Game.new()
-      ...> |> RPS.Game.first_player_choice(:rock)
-      ...> |> RPS.Game.second_player_choice(:scissors)
+      iex> Rps.Game.new()
+      ...> |> Rps.Game.first_player_choice(:rock)
+      ...> |> Rps.Game.second_player_choice(:scissors)
       #Game<current_round: #Round<first_player_choice: nil, second_player_choice: nil, result: nil>, first_player_score: 1, second_player_score: 0, result: nil>
 
   """
@@ -126,6 +126,6 @@ defmodule RPS.Game do
   end
 end
 
-defimpl Inspect, for: RPS.Game do
-  def inspect(game, _opts), do: "#Game<" <> RPS.Game.to_doc(game) <> ">"
+defimpl Inspect, for: Rps.Game do
+  def inspect(game, _opts), do: "#Game<" <> Rps.Game.to_doc(game) <> ">"
 end

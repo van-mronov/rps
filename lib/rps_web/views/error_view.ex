@@ -1,5 +1,5 @@
-defmodule RPSWeb.ErrorView do
-  use RPSWeb, :view
+defmodule RpsWeb.ErrorView do
+  use RpsWeb, :view
 
   # If you want to customize a particular status code
   # for a certain format, you may uncomment below.

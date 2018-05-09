@@ -1,8 +1,8 @@
-defmodule RPSWeb.UserControllerTest do
-  use RPSWeb.ConnCase
+defmodule RpsWeb.UserControllerTest do
+  use RpsWeb.ConnCase
 
-  alias RPS.Accounts
-  alias RPS.Accounts.User
+  alias Rps.Accounts
+  alias Rps.Accounts.User
 
   @create_attrs %{name: "Ivan", password: "super_sequre_pass"}
   @update_attrs %{name: "Maria", password: "updated_super_sequre_pass"}

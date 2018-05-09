@@ -1,8 +1,8 @@
-defmodule RPS.GameTest do
+defmodule Rps.GameTest do
   use ExUnit.Case
-  doctest RPS.Game
+  doctest Rps.Game
 
-  alias RPS.{Game, Round}
+  alias Rps.{Game, Round}
 
   describe "new/0" do
     test "returns a blank game" do
@@ -19,9 +19,9 @@ defmodule RPS.GameTest do
   describe "second_player_choice/2" do
     test "finishes the current round" do
       game =
-        RPS.Game.new()
-        |> RPS.Game.first_player_choice(:rock)
-        |> RPS.Game.second_player_choice(:scissors)
+        Rps.Game.new()
+        |> Rps.Game.first_player_choice(:rock)
+        |> Rps.Game.second_player_choice(:scissors)
 
       assert List.first(game.rounds) == %Round{
                first_player_choice: :rock,
@@ -32,9 +32,9 @@ defmodule RPS.GameTest do
 
     test "starts the new round" do
       game =
-        RPS.Game.new()
-        |> RPS.Game.first_player_choice(:rock)
-        |> RPS.Game.second_player_choice(:scissors)
+        Rps.Game.new()
+        |> Rps.Game.first_player_choice(:rock)
+        |> Rps.Game.second_player_choice(:scissors)
 
       assert game.current_round == %Round{}
     end
@@ -43,10 +43,10 @@ defmodule RPS.GameTest do
   describe "second_player_choice/2 of the 10th round" do
     test "finishes the game" do
       game =
-        Enum.reduce(1..10, RPS.Game.new(), fn _round_number, game ->
+        Enum.reduce(1..10, Rps.Game.new(), fn _round_number, game ->
           game
-          |> RPS.Game.first_player_choice(:rock)
-          |> RPS.Game.second_player_choice(:scissors)
+          |> Rps.Game.first_player_choice(:rock)
+          |> Rps.Game.second_player_choice(:scissors)
         end)
 
       assert game.current_round == nil
@@ -54,17 +54,17 @@ defmodule RPS.GameTest do
 
     test "marks the first player as a winner if he/she won more rounds than the second player" do
       game =
-        Enum.reduce(1..6, RPS.Game.new(), fn _round_number, game ->
+        Enum.reduce(1..6, Rps.Game.new(), fn _round_number, game ->
           game
-          |> RPS.Game.first_player_choice(:rock)
-          |> RPS.Game.second_player_choice(:scissors)
+          |> Rps.Game.first_player_choice(:rock)
+          |> Rps.Game.second_player_choice(:scissors)
         end)
 
       game =
         Enum.reduce(1..4, game, fn _round_number, game ->
           game
-          |> RPS.Game.first_player_choice(:paper)
-          |> RPS.Game.second_player_choice(:scissors)
+          |> Rps.Game.first_player_choice(:paper)
+          |> Rps.Game.second_player_choice(:scissors)
         end)
 
       assert game.result == :first
@@ -72,17 +72,17 @@ defmodule RPS.GameTest do
 
     test "marks the second player as a winner if he/she won more rounds than the first player" do
       game =
-        Enum.reduce(1..3, RPS.Game.new(), fn _round_number, game ->
+        Enum.reduce(1..3, Rps.Game.new(), fn _round_number, game ->
           game
-          |> RPS.Game.first_player_choice(:rock)
-          |> RPS.Game.second_player_choice(:scissors)
+          |> Rps.Game.first_player_choice(:rock)
+          |> Rps.Game.second_player_choice(:scissors)
         end)
 
       game =
         Enum.reduce(1..7, game, fn _round_number, game ->
           game
-          |> RPS.Game.first_player_choice(:paper)
-          |> RPS.Game.second_player_choice(:scissors)
+          |> Rps.Game.first_player_choice(:paper)
+          |> Rps.Game.second_player_choice(:scissors)
         end)
 
       assert game.result == :second
@@ -90,17 +90,17 @@ defmodule RPS.GameTest do
 
     test "sets the result of the game as `:draw` if both players won 5 rounds" do
       game =
-        Enum.reduce(1..5, RPS.Game.new(), fn _round_number, game ->
+        Enum.reduce(1..5, Rps.Game.new(), fn _round_number, game ->
           game
-          |> RPS.Game.first_player_choice(:rock)
-          |> RPS.Game.second_player_choice(:scissors)
+          |> Rps.Game.first_player_choice(:rock)
+          |> Rps.Game.second_player_choice(:scissors)
         end)
 
       game =
         Enum.reduce(1..5, game, fn _round_number, game ->
           game
-          |> RPS.Game.first_player_choice(:paper)
-          |> RPS.Game.second_player_choice(:scissors)
+          |> Rps.Game.first_player_choice(:paper)
+          |> Rps.Game.second_player_choice(:scissors)
         end)
 
       assert game.result == :draw
@@ -110,27 +110,27 @@ defmodule RPS.GameTest do
   describe "second_player_choice/2 increments the first player's score" do
     test "if he/she chose `:rock` and the second player chose `:scissors`" do
       game =
-        RPS.Game.new()
-        |> RPS.Game.first_player_choice(:rock)
-        |> RPS.Game.second_player_choice(:scissors)
+        Rps.Game.new()
+        |> Rps.Game.first_player_choice(:rock)
+        |> Rps.Game.second_player_choice(:scissors)
 
       assert game.first_player_score == 1
     end
 
     test "if he/she chose `:scissors` and the second player chose `:paper`" do
       game =
-        RPS.Game.new()
-        |> RPS.Game.first_player_choice(:scissors)
-        |> RPS.Game.second_player_choice(:paper)
+        Rps.Game.new()
+        |> Rps.Game.first_player_choice(:scissors)
+        |> Rps.Game.second_player_choice(:paper)
 
       assert game.first_player_score == 1
     end
 
     test "if he/she chose `:paper` and the second player chose `:rock`" do
       game =
-        RPS.Game.new()
-        |> RPS.Game.first_player_choice(:paper)
-        |> RPS.Game.second_player_choice(:rock)
+        Rps.Game.new()
+        |> Rps.Game.first_player_choice(:paper)
+        |> Rps.Game.second_player_choice(:rock)
 
       assert game.first_player_score == 1
     end
@@ -139,27 +139,27 @@ defmodule RPS.GameTest do
   describe "second_player_choice/2 increments the second player's score" do
     test "if he/she chose `:rock` and the first player chose `:scissors`" do
       game =
-        RPS.Game.new()
-        |> RPS.Game.first_player_choice(:scissors)
-        |> RPS.Game.second_player_choice(:rock)
+        Rps.Game.new()
+        |> Rps.Game.first_player_choice(:scissors)
+        |> Rps.Game.second_player_choice(:rock)
 
       assert game.second_player_score == 1
     end
 
     test "if he/she chose `:scissors` and the first player chose `:paper`" do
       game =
-        RPS.Game.new()
-        |> RPS.Game.first_player_choice(:paper)
-        |> RPS.Game.second_player_choice(:scissors)
+        Rps.Game.new()
+        |> Rps.Game.first_player_choice(:paper)
+        |> Rps.Game.second_player_choice(:scissors)
 
       assert game.second_player_score == 1
     end
 
     test "if he/she chose `:paper` and the first player chose `:rock`" do
       game =
-        RPS.Game.new()
-        |> RPS.Game.first_player_choice(:rock)
-        |> RPS.Game.second_player_choice(:paper)
+        Rps.Game.new()
+        |> Rps.Game.first_player_choice(:rock)
+        |> Rps.Game.second_player_choice(:paper)
 
       assert game.second_player_score == 1
     end

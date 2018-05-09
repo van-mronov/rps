@@ -7,21 +7,26 @@ use Mix.Config
 
 # General application configuration
 config :rps,
-  namespace: RPS,
-  ecto_repos: [RPS.Repo]
+  namespace: Rps,
+  ecto_repos: [Rps.Repo]
 
 # Configures the endpoint
-config :rps, RPSWeb.Endpoint,
+config :rps, RpsWeb.Endpoint,
   url: [host: "localhost"],
   secret_key_base: "2RznssGIztZQu0tgLRjjbfVAAGZwXocJcrIisb8vGw7tLn/PU8N11dKiN6Eok3o8",
-  render_errors: [view: RPSWeb.ErrorView, accepts: ~w(json)],
-  pubsub: [name: RPS.PubSub,
+  render_errors: [view: RpsWeb.ErrorView, accepts: ~w(json)],
+  pubsub: [name: Rps.PubSub,
            adapter: Phoenix.PubSub.PG2]
 
 # Configures Elixir's Logger
 config :logger, :console,
   format: "$time $metadata[$level] $message\n",
   metadata: [:user_id]
+
+# Phauxth authentication configuration
+config :phauxth,
+  token_salt: "7Tzs0/3A",
+  endpoint: RpsWeb.Endpoint
 
 # Import environment specific config. This must remain at the bottom
 # of this file so it overrides the configuration defined above.

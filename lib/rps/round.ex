@@ -1,18 +1,18 @@
-defmodule RPS.Round do
+defmodule Rps.Round do
   @moduledoc """
   Module implements a basic logic of the Rock-Paper-Scissors game round.
   """
 
   defstruct first_player_choice: nil, second_player_choice: nil, result: nil
 
-  alias RPS.Round
+  alias Rps.Round
 
   @doc """
   Creates a blank game round.
 
   ## Examples
 
-      iex> RPS.Round.new()
+      iex> Rps.Round.new()
       #Round<first_player_choice: nil, second_player_choice: nil, result: nil>
 
   """
@@ -23,12 +23,12 @@ defmodule RPS.Round do
 
   ## Examples
 
-      iex> round = RPS.Round.new()
-      iex> RPS.Round.player_choice(round, :first, :rock)
+      iex> round = Rps.Round.new()
+      iex> Rps.Round.player_choice(round, :first, :rock)
       #Round<first_player_choice: :rock, second_player_choice: nil, result: nil>
 
-      iex> round = RPS.Round.new()
-      iex> RPS.Round.player_choice(round, :second, :paper)
+      iex> round = Rps.Round.new()
+      iex> Rps.Round.player_choice(round, :second, :paper)
       #Round<first_player_choice: nil, second_player_choice: :paper, result: nil>
 
   """
@@ -40,16 +40,16 @@ defmodule RPS.Round do
 
   ## Examples
 
-      iex> RPS.Round.new()
-      ...> |> RPS.Round.player_choice(:first, :rock)
-      ...> |> RPS.Round.player_choice(:second, :rock)
-      ...> |> RPS.Round.update_result()
+      iex> Rps.Round.new()
+      ...> |> Rps.Round.player_choice(:first, :rock)
+      ...> |> Rps.Round.player_choice(:second, :rock)
+      ...> |> Rps.Round.update_result()
       #Round<first_player_choice: :rock, second_player_choice: :rock, result: :draw>
 
-      iex> RPS.Round.new()
-      ...> |> RPS.Round.player_choice(:first, :rock)
-      ...> |> RPS.Round.player_choice(:second, :scissors)
-      ...> |> RPS.Round.update_result()
+      iex> Rps.Round.new()
+      ...> |> Rps.Round.player_choice(:first, :rock)
+      ...> |> Rps.Round.player_choice(:second, :scissors)
+      ...> |> Rps.Round.update_result()
       #Round<first_player_choice: :rock, second_player_choice: :scissors, result: :first>
 
   """
@@ -82,6 +82,6 @@ defmodule RPS.Round do
   end
 end
 
-defimpl Inspect, for: RPS.Round do
-  def inspect(round, _opts), do: "#Round<" <> RPS.Round.to_doc(round) <> ">"
+defimpl Inspect, for: Rps.Round do
+  def inspect(round, _opts), do: "#Round<" <> Rps.Round.to_doc(round) <> ">"
 end

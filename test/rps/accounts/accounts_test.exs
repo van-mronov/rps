@@ -1,10 +1,10 @@
-defmodule RPS.AccountsTest do
-  use RPS.DataCase
+defmodule Rps.AccountsTest do
+  use Rps.DataCase
 
-  alias RPS.Accounts
+  alias Rps.Accounts
 
   describe "users" do
-    alias RPS.Accounts.User
+    alias Rps.Accounts.User
 
     @valid_attrs %{name: "Ivan", password: "super_sequre_pass"}
     @update_attrs %{name: "Maria", password: "updated_super_sequre_pass"}
@@ -36,7 +36,7 @@ defmodule RPS.AccountsTest do
 
     test "create_user/1 returns a user changeset with hashed password" do
       {:ok, %User{} = user} = Accounts.create_user(@valid_attrs)
-      assert Comeonin.Bcrypt.checkpw(user.password, user.password_digest)
+      assert Comeonin.Bcrypt.checkpw(user.password, user.password_hash)
     end
 
     test "create_user/1 with invalid data returns error changeset" do

@@ -1,4 +1,4 @@
-defmodule RPS.Mixfile do
+defmodule Rps.Mixfile do
   use Mix.Project
 
   def project do
@@ -19,7 +19,7 @@ defmodule RPS.Mixfile do
   # Type `mix help compile.app` for more information.
   def application do
     [
-      mod: {RPS.Application, []},
+      mod: {Rps.Application, []},
       extra_applications: [:logger, :runtime_tools]
     ]
   end
@@ -40,7 +40,7 @@ defmodule RPS.Mixfile do
       {:gettext, "~> 0.11"},
       {:cowboy, "~> 1.0"},
       {:ex_doc, "~> 0.16", only: :dev, runtime: false},
-      {:comeonin, "~> 4.1"},
+      {:phauxth, "~> 1.2"},
       {:bcrypt_elixir, "~> 1.0"}
     ]
   end

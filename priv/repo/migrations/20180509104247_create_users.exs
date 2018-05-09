@@ -1,10 +1,10 @@
-defmodule RPS.Repo.Migrations.CreateUsers do
+defmodule Rps.Repo.Migrations.CreateUsers do
   use Ecto.Migration
 
   def change do
     create table(:users) do
       add :name, :string
-      add :password_digest, :string
+      add :password_hash, :string
 
       timestamps()
     end

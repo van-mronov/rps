@@ -1,6 +1,6 @@
-defmodule RPSWeb.UserView do
-  use RPSWeb, :view
-  alias RPSWeb.UserView
+defmodule RpsWeb.UserView do
+  use RpsWeb, :view
+  alias RpsWeb.UserView
 
   def render("index.json", %{users: users}) do
     %{data: render_many(users, UserView, "user.json")}

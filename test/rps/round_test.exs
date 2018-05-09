@@ -1,8 +1,8 @@
-defmodule RPS.RoundTest do
+defmodule Rps.RoundTest do
   use ExUnit.Case
-  doctest RPS.Round
+  doctest Rps.Round
 
-  alias RPS.Round
+  alias Rps.Round
 
   describe "new/0" do
     test "returns a blank round" do

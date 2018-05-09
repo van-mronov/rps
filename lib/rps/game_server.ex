@@ -1,4 +1,4 @@
-defmodule RPS.GameServer do
+defmodule Rps.GameServer do
   @moduledoc """
   A game server process that holds a `Game` struct as its state.
   """
@@ -20,7 +20,7 @@ defmodule RPS.GameServer do
   Returns a tuple used to register and lookup a game server process by name.
   """
   def via_tuple(game_name) do
-    {:via, Registry, {RPS.GameRegistry, game_name}}
+    {:via, Registry, {Rps.GameRegistry, game_name}}
   end
 
   @doc """
@@ -34,7 +34,7 @@ defmodule RPS.GameServer do
 
   def init(game_name) do
     Logger.info("Spawned game server process named '#{game_name}'.")
-    {:ok, RPS.Game.new()}
+    {:ok, Rps.Game.new()}
   end
 
   def handle_call(:info, _from, game) do

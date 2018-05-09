@@ -1,4 +1,4 @@
-defmodule RPSWeb.ErrorHelpers do
+defmodule RpsWeb.ErrorHelpers do
   @moduledoc """
   Conveniences for translating and building error messages.
   """
@@ -25,9 +25,9 @@ defmodule RPSWeb.ErrorHelpers do
     # should be written to the errors.po file. The :count option is
     # set by Ecto and indicates we should also apply plural rules.
     if count = opts[:count] do
-      Gettext.dngettext(RPSWeb.Gettext, "errors", msg, msg, count, opts)
+      Gettext.dngettext(RpsWeb.Gettext, "errors", msg, msg, count, opts)
     else
-      Gettext.dgettext(RPSWeb.Gettext, "errors", msg, opts)
+      Gettext.dgettext(RpsWeb.Gettext, "errors", msg, opts)
     end
   end
 end

@@ -1,11 +1,11 @@
-defmodule RPS.GameSupervisor do
+defmodule Rps.GameSupervisor do
   @moduledoc """
   A supervisor that starts `GameServer` processes dynamically.
   """
 
   use DynamicSupervisor
 
-  alias RPS.GameServer
+  alias Rps.GameServer
 
   @doc false
   def start_link(_arg), do: DynamicSupervisor.start_link(__MODULE__, :ok, name: __MODULE__)

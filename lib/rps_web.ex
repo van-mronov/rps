@@ -1,12 +1,12 @@
-defmodule RPSWeb do
+defmodule RpsWeb do
   @moduledoc """
   The entrypoint for defining your web interface, such
   as controllers, views, channels and so on.
 
   This can be used in your application as:
 
-      use RPSWeb, :controller
-      use RPSWeb, :view
+      use RpsWeb, :controller
+      use RpsWeb, :view
 
   The definitions below will be executed for every view,
   controller, etc, so keep them short and clean, focused
@@ -19,24 +19,24 @@ defmodule RPSWeb do
 
   def controller do
     quote do
-      use Phoenix.Controller, namespace: RPSWeb
+      use Phoenix.Controller, namespace: RpsWeb
       import Plug.Conn
-      import RPSWeb.Router.Helpers
-      import RPSWeb.Gettext
+      import RpsWeb.Router.Helpers
+      import RpsWeb.Gettext
     end
   end
 
   def view do
     quote do
       use Phoenix.View, root: "lib/rps_web/templates",
-                        namespace: RPSWeb
+                        namespace: RpsWeb
 
       # Import convenience functions from controllers
       import Phoenix.Controller, only: [get_flash: 2, view_module: 1]
 
-      import RPSWeb.Router.Helpers
-      import RPSWeb.ErrorHelpers
-      import RPSWeb.Gettext
+      import RpsWeb.Router.Helpers
+      import RpsWeb.ErrorHelpers
+      import RpsWeb.Gettext
     end
   end
 
@@ -51,7 +51,7 @@ defmodule RPSWeb do
   def channel do
     quote do
       use Phoenix.Channel
-      import RPSWeb.Gettext
+      import RpsWeb.Gettext
     end
   end
 

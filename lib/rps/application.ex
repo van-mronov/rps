@@ -1,20 +1,20 @@
-defmodule RPS.Application do
+defmodule Rps.Application do
   use Application
 
   def start(_type, _args) do
     children = [
-      RPS.Repo,
-      RPSWeb.Endpoint,
-      {Registry, keys: :unique, name: RPS.GameRegistry},
-      RPS.GameSupervisor
+      Rps.Repo,
+      RpsWeb.Endpoint,
+      {Registry, keys: :unique, name: Rps.GameRegistry},
+      Rps.GameSupervisor
     ]
 
-    opts = [strategy: :one_for_one, name: RPS.Supervisor]
+    opts = [strategy: :one_for_one, name: Rps.Supervisor]
     Supervisor.start_link(children, opts)
   end
 
   def config_change(changed, _new, removed) do
-    RPSWeb.Endpoint.config_change(changed, removed)
+    RpsWeb.Endpoint.config_change(changed, removed)
     :ok
   end
 end
