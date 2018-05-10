@@ -3,7 +3,8 @@ defmodule RpsWeb.UserSocket do
   require Logger
 
   ## Channels
-  channel "lobby:lobby", RpsWeb.LobbyChannel
+  channel "game:*", RpsWeb.GameChannel
+  channel "game:lobby", RpsWeb.LobbyChannel
 
   ## Transports
   transport :websocket, Phoenix.Transports.WebSocket

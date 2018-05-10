@@ -3,7 +3,7 @@ defmodule RpsWeb.LobbyChannel do
 
   require Logger
 
-  def join("lobby:lobby", _payload, socket), do: {:ok, socket}
+  def join("game:lobby", _payload, socket), do: {:ok, socket}
 
   def handle_in("new_game", _params, socket) do
     case Rps.start_game(socket.assigns.user_id) do
