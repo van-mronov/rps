@@ -51,6 +51,10 @@ defmodule Rps.GameServer do
     GenServer.call(via_tuple(game_name), {:join, player})
   end
 
+  def turn(game_name, player, choice) do
+    GenServer.call(via_tuple(game_name), {:turn, player, choice})
+  end
+
   # Server Callbacks
 
   def init({game_name, user}) do
@@ -70,6 +74,16 @@ defmodule Rps.GameServer do
     do: {:reply, :ok, %{state | second_player: player}}
   def handle_call({:join, _player}, _from, state),
     do: {:reply, {:error, :another_player_already_joined}, state}
+
+  def handle_call({:turn, player, choice}, _from, %{game: game, first_player: player} = state) do
+    new_state = %{state | game: Rps.Game.first_player_choice(game, choice)}
+    {:reply, get_info(new_state), new_state}
+  end
+
+  def handle_call({:turn, player, choice}, _from, %{game: game, second_player: player} = state) do
+    new_state = %{state | game: Rps.Game.second_player_choice(game, choice)}
+    {:reply, get_info(new_state), new_state}
+  end
 
   defp get_info(%{game: game, first_player: first_player, second_player: second_player}) do
     %{

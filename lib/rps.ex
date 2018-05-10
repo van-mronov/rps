@@ -23,4 +23,9 @@ defmodule Rps do
     user = Rps.Accounts.get_user!(user_id)
     Rps.GameServer.join(game_name, user)
   end
+
+  def game_turn(game_name, user_id, choice) do
+    user = Rps.Accounts.get_user!(user_id)
+    Rps.GameServer.turn(game_name, user, String.to_atom(choice))
+  end
 end

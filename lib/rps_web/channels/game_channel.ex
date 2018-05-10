@@ -16,6 +16,18 @@ defmodule RpsWeb.GameChannel do
     {:noreply, socket}
   end
 
+  def handle_in("turn", %{"choice" => choice}, socket) do
+    "game:" <> game_name = socket.topic
+
+    if GameServer.alive?(game_name) do
+      game_info = Rps.game_turn(game_name, socket.assigns.user_id, choice)
+      broadcast!(socket, "game_info", game_info)
+      {:noreply, socket}
+    else
+      {:reply, {:error, %{reason: "Game does not exist"}}, socket}
+    end
+  end
+
   defp maybe_join_game(game_name, socket) do
     case Rps.join_game(game_name, socket.assigns.user_id) do
       :ok ->

@@ -60,9 +60,22 @@ defmodule RpsWeb.GameChannelTest do
 
     test "pushes the current game info after the second player joins the game", context do
       {:ok, _reply, _socket} = subscribe_and_join(context.socket, GameChannel, context.topic, %{})
+      assert_broadcast("game_info", %{})
       {:ok, _reply, _socket} = join(context.second_palyer_socket, context.topic)
       game_info = GameServer.info(context.game_name)
       assert_push("game_info", ^game_info)
+    end
+  end
+
+  describe "turn" do
+    test "pushes the current game info", context do
+      {:ok, _reply, socket1} = subscribe_and_join(context.socket, GameChannel, context.topic, %{})
+      assert_broadcast("game_info", %{})
+      {:ok, _reply, _socket2} = join(context.second_palyer_socket, context.topic)
+      assert_broadcast("game_info", %{})
+      push(socket1, "turn", %{"choice" => "rock"})
+      assert_broadcast("game_info", payload)
+      assert payload.current_round.first_player_choice == :rock
     end
   end
 end
