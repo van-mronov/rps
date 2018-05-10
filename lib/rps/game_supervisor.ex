@@ -16,10 +16,10 @@ defmodule Rps.GameSupervisor do
   @doc """
   Starts a `GameServer` process and supervises it.
   """
-  def start_game(game_name) do
+  def start_game(game_name, user) do
     child_spec = %{
       id: GameServer,
-      start: {GameServer, :start_link, [game_name]},
+      start: {GameServer, :start_link, [game_name, user]},
       restart: :transient
     }
 

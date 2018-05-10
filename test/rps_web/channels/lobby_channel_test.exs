@@ -14,4 +14,10 @@ defmodule RpsWeb.LobbyChannelTest do
     {:ok, _, socket} = join(socket, "lobby:lobby")
     assert socket.joined
   end
+
+  test "new_game replies with status ok", %{socket: socket} do
+    {:ok, _, socket} = subscribe_and_join(socket, "lobby:lobby")
+    ref = push socket, "new_game", %{}
+    assert_reply ref, :ok, %{game_name: _game_name}
+  end
 end

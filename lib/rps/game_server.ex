@@ -10,10 +10,10 @@ defmodule Rps.GameServer do
   # Client (Public) Interface
 
   @doc """
-  Spawns a new game server process registered under the given `game_name`.
+  Spawns a new game server process registered under the given `game_name` and started by `user`.
   """
-  def start_link(game_name) do
-    GenServer.start_link(__MODULE__, game_name, name: via_tuple(game_name))
+  def start_link(game_name, user) do
+    GenServer.start_link(__MODULE__, {game_name, user}, name: via_tuple(game_name))
   end
 
   @doc """
@@ -32,13 +32,13 @@ defmodule Rps.GameServer do
 
   # Server Callbacks
 
-  def init(game_name) do
+  def init({game_name, user}) do
     Logger.info("Spawned game server process named '#{game_name}'.")
-    {:ok, Rps.Game.new()}
+    {:ok, %{game: Rps.Game.new(), first_player: user}}
   end
 
-  def handle_call(:info, _from, game) do
-    {:reply, get_info(game), game}
+  def handle_call(:info, _from, %{game: game} = state) do
+    {:reply, get_info(game), state}
   end
 
   defp get_info(game) do
