@@ -8,7 +8,8 @@ use Mix.Config
 # General application configuration
 config :rps,
   namespace: Rps,
-  ecto_repos: [Rps.Repo]
+  ecto_repos: [Rps.Repo],
+  move_timeout: :timer.seconds(10)
 
 # Configures the endpoint
 config :rps, RpsWeb.Endpoint,

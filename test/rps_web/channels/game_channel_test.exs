@@ -5,6 +5,8 @@ defmodule RpsWeb.GameChannelTest do
   alias Rps.GameServer
   alias RpsWeb.GameChannel
 
+  @move_timeout_offset_ms 100
+
   setup do
     user = add_user("Ivan")
     token = Phauxth.Token.sign(RpsWeb.Endpoint, user.id)
@@ -117,7 +119,8 @@ defmodule RpsWeb.GameChannelTest do
     {:ok, _reply, _socket2} = join(context.second_palyer_socket, context.topic)
     assert_broadcast("game_info", %{})
     assert_broadcast("game_started", %{})
-    assert_broadcast("opponent_move", %{}, 10_500)
+    move_timeout = Application.get_env(:rps, :move_timeout)
+    assert_broadcast("opponent_move", %{}, move_timeout + @move_timeout_offset_ms)
     assert_broadcast("game_info", payload)
     assert not is_nil(payload.current_round.first_player_choice)
   end

@@ -18,4 +18,6 @@ config :rps, Rps.Repo,
   hostname: "localhost",
   pool: Ecto.Adapters.SQL.Sandbox
 
+config :rps, move_timeout: 200
+
 config :comeonin, bcrypt_log_rounds: 4

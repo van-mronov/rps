@@ -3,8 +3,6 @@ defmodule RpsWeb.GameChannel do
 
   alias Rps.GameServer
 
-  @move_timeout :timer.seconds(10)
-
   intercept ["game_started", "opponent_move"]
 
   def join("game:" <> game_name, _params, socket) do
@@ -44,8 +42,8 @@ defmodule RpsWeb.GameChannel do
   end
 
   def handle_out(event, msg, socket) when event in ~w(game_started opponent_move) do
-    # Rps.Accounts.get_user!(socket.assigns.user_id).name |> inspect |> raise
-    timer = Process.send_after(self(), :move_timeout, @move_timeout)
+    move_timeout = Application.get_env(:rps, :move_timeout)
+    timer = Process.send_after(self(), :move_timeout, move_timeout)
     push(socket, event, msg)
     {:noreply, assign(socket, :timer, timer)}
   end
