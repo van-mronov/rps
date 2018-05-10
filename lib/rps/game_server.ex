@@ -24,6 +24,23 @@ defmodule Rps.GameServer do
   end
 
   @doc """
+  Returns `true` if the game server process registered under the
+  given `game_name`, or `false` if no process is registered.
+  """
+  def alive?(game_name) do
+    game_name
+    |> via_tuple()
+    |> GenServer.whereis()
+    |> case do
+      pid when is_pid(pid) ->
+        Process.alive?(pid)
+
+      nil ->
+        false
+    end
+  end
+
+  @doc """
   Returns the info of the game registered under the given `game_name`.
   """
   def info(game_name) do

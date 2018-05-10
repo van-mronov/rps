@@ -1,28 +1,24 @@
 defmodule RpsWeb.GameChannelTest do
   use RpsWeb.ChannelCase
 
-  alias RpsWeb.GameChannel
+  import RpsWeb.AuthCase
 
   setup do
-    {:ok, _, socket} =
-      socket("user_id", %{some: :assign})
-      |> subscribe_and_join(GameChannel, "game:lobby")
-
-    {:ok, socket: socket}
+    user = add_user("Ivan")
+    token = Phauxth.Token.sign(RpsWeb.Endpoint, user.id)
+    {:ok, socket} = connect(RpsWeb.UserSocket, %{"access_token" => token})
+    {:ok, game_name} = Rps.start_game(user.id)
+    {:ok, user: user, token: token, socket: socket, game_name: game_name}
   end
 
-  test "ping replies with status ok", %{socket: socket} do
-    ref = push socket, "ping", %{"hello" => "there"}
-    assert_reply ref, :ok, %{"hello" => "there"}
-  end
+  describe "join" do
+    test "replies with status error if there is no such game", %{socket: socket} do
+      assert join(socket, "game:invalid_game_name") == {:error, %{reason: "Game does not exist"}}
+    end
 
-  test "shout broadcasts to game:lobby", %{socket: socket} do
-    push socket, "shout", %{"hello" => "all"}
-    assert_broadcast "shout", %{"hello" => "all"}
-  end
-
-  test "broadcasts are pushed to the client", %{socket: socket} do
-    broadcast_from! socket, "broadcast", %{"some" => "data"}
-    assert_push "broadcast", %{"some" => "data"}
+    test "replies with status ok for creator of the game", context do
+      {:ok, %{}, socket} = join(context.socket, "game:" <> context.game_name)
+      assert socket.joined
+    end
   end
 end
