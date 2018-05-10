@@ -9,6 +9,7 @@ defmodule RpsWeb.LobbyChannel do
     case Rps.start_game(socket.assigns.user_id) do
       {:ok, game_name} ->
         {:reply, {:ok, %{game_name: game_name}}, socket}
+
       error ->
         Logger.warn "Unable to start game: #{inspect error}"
         {:reply, {:error, %{}}, socket}

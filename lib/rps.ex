@@ -13,8 +13,14 @@ defmodule Rps do
     case Rps.GameSupervisor.start_game(game_name, user) do
       {:ok, _pid} ->
         {:ok, game_name}
+
       error ->
         error
     end
+  end
+
+  def join_game(game_name, user_id) do
+    user = Rps.Accounts.get_user!(user_id)
+    Rps.GameServer.join(game_name, user)
   end
 end

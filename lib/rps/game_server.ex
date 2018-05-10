@@ -1,6 +1,6 @@
 defmodule Rps.GameServer do
   @moduledoc """
-  A game server process that holds a `Game` struct as its state.
+  A game server process that holds a `Game` struct and players as its state.
   """
 
   use GenServer
@@ -47,24 +47,40 @@ defmodule Rps.GameServer do
     GenServer.call(via_tuple(game_name), :info)
   end
 
+  def join(game_name, player) do
+    GenServer.call(via_tuple(game_name), {:join, player})
+  end
+
   # Server Callbacks
 
   def init({game_name, user}) do
     Logger.info("Spawned game server process named '#{game_name}'.")
-    {:ok, %{game: Rps.Game.new(), first_player: user}}
+    {:ok, %{game: Rps.Game.new(), first_player: user, second_player: nil}}
   end
 
-  def handle_call(:info, _from, %{game: game} = state) do
-    {:reply, get_info(game), state}
+  def handle_call(:info, _from, state) do
+    {:reply, get_info(state), state}
   end
 
-  defp get_info(game) do
+  def handle_call({:join, player}, _from, %{first_player: player} = state),
+    do: {:reply, :ok, state}
+  def handle_call({:join, player}, _from, %{second_player: player} = state),
+    do: {:reply, :ok, state}
+  def handle_call({:join, player}, _from, %{second_player: nil} = state),
+    do: {:reply, :ok, %{state | second_player: player}}
+  def handle_call({:join, _player}, _from, state),
+    do: {:reply, {:error, :another_player_already_joined}, state}
+
+  defp get_info(%{game: game, first_player: first_player, second_player: second_player}) do
     %{
       current_round: game.current_round,
       rounds: game.rounds,
-      first_player_score: game.first_player_score,
-      second_player_score: game.second_player_score,
+      first_player: player_info(first_player, game.first_player_score),
+      second_player: player_info(second_player, game.second_player_score),
       result: game.result
     }
   end
+
+  defp player_info(nil, _score), do: nil
+  defp player_info(player, score), do: %{id: player.id, name: player.name, score: score}
 end
