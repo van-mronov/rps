@@ -1,28 +1,17 @@
 defmodule RpsWeb.LobbyChannelTest do
   use RpsWeb.ChannelCase
 
-  alias RpsWeb.LobbyChannel
+  import RpsWeb.AuthCase
 
   setup do
-    {:ok, _, socket} =
-      socket("user_id", %{some: :assign})
-      |> subscribe_and_join(LobbyChannel, "lobby:lobby")
-
-    {:ok, socket: socket}
+    user = add_user("Ivan")
+    token = Phauxth.Token.sign(RpsWeb.Endpoint, user.id)
+    {:ok, socket} = connect(RpsWeb.UserSocket, %{"access_token" => token})
+    {:ok, user: user, token: token, socket: socket}
   end
 
-  test "ping replies with status ok", %{socket: socket} do
-    ref = push socket, "ping", %{"hello" => "there"}
-    assert_reply ref, :ok, %{"hello" => "there"}
-  end
-
-  test "shout broadcasts to lobby:lobby", %{socket: socket} do
-    push socket, "shout", %{"hello" => "all"}
-    assert_broadcast "shout", %{"hello" => "all"}
-  end
-
-  test "broadcasts are pushed to the client", %{socket: socket} do
-    broadcast_from! socket, "broadcast", %{"some" => "data"}
-    assert_push "broadcast", %{"some" => "data"}
+  test "authenticated users can join to lobby channel", %{socket: socket} do
+    {:ok, _, socket} = join(socket, "lobby:lobby")
+    assert socket.joined
   end
 end
