@@ -12,7 +12,7 @@ defmodule RpsWeb.GameChannel do
   end
 
   def handle_info({:after_join, game_name}, socket) do
-    push(socket, "game_info", GameServer.info(game_name))
+    broadcast!(socket, "game_info", GameServer.info(game_name))
     {:noreply, socket}
   end
 

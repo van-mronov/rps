@@ -57,5 +57,12 @@ defmodule RpsWeb.GameChannelTest do
       error_message = {:error, %{reason: "Another player has already joined"}}
       assert join(context.other_user_socket, context.topic) == error_message
     end
+
+    test "pushes the current game info after the second player joins the game", context do
+      {:ok, _reply, _socket} = subscribe_and_join(context.socket, GameChannel, context.topic, %{})
+      {:ok, _reply, _socket} = join(context.second_palyer_socket, context.topic)
+      game_info = GameServer.info(context.game_name)
+      assert_push("game_info", ^game_info)
+    end
   end
 end
