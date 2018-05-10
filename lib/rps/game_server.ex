@@ -17,14 +17,14 @@ defmodule Rps.GameServer do
   end
 
   @doc """
-  Returns a tuple used to register and lookup a game server process by name.
+  Removes a tuple used to register and lookup a game server process by name.
   """
   def via_tuple(game_name) do
     {:via, Registry, {Rps.GameRegistry, game_name}}
   end
 
   @doc """
-  Returns `true` if the game server process registered under the
+  Removes `true` if the game server process registered under the
   given `game_name`, or `false` if no process is registered.
   """
   def alive?(game_name) do
@@ -41,7 +41,7 @@ defmodule Rps.GameServer do
   end
 
   @doc """
-  Returns the info of the game registered under the given `game_name`.
+  Removes the info of the game registered under the given `game_name`.
   """
   def info(game_name) do
     GenServer.call(via_tuple(game_name), :info)
@@ -51,15 +51,15 @@ defmodule Rps.GameServer do
     GenServer.call(via_tuple(game_name), {:join, player})
   end
 
-  def turn(game_name, player, choice) do
-    GenServer.call(via_tuple(game_name), {:turn, player, choice})
+  def move(game_name, player, choice) do
+    GenServer.call(via_tuple(game_name), {:move, player, choice})
   end
 
   # Server Callbacks
 
   def init({game_name, user}) do
     Logger.info("Spawned game server process named '#{game_name}'.")
-    {:ok, %{game: Rps.Game.new(), first_player: user, second_player: nil}}
+    {:ok, %{game: Rps.Game.new(), first_player: user, second_player: nil, move: :first}}
   end
 
   def handle_call(:info, _from, state) do
@@ -67,20 +67,20 @@ defmodule Rps.GameServer do
   end
 
   def handle_call({:join, player}, _from, %{first_player: player} = state),
-    do: {:reply, :ok, state}
+    do: {:reply, {:ok, :first}, state}
   def handle_call({:join, player}, _from, %{second_player: player} = state),
-    do: {:reply, :ok, state}
+    do: {:reply, {:ok, :second}, state}
   def handle_call({:join, player}, _from, %{second_player: nil} = state),
-    do: {:reply, :ok, %{state | second_player: player}}
+    do: {:reply, {:ok, :second}, %{state | second_player: player}}
   def handle_call({:join, _player}, _from, state),
     do: {:reply, {:error, :another_player_already_joined}, state}
 
-  def handle_call({:turn, player, choice}, _from, %{game: game, first_player: player} = state) do
+  def handle_call({:move, player, choice}, _from, %{game: game, first_player: player} = state) do
     new_state = %{state | game: Rps.Game.first_player_choice(game, choice)}
     {:reply, get_info(new_state), new_state}
   end
 
-  def handle_call({:turn, player, choice}, _from, %{game: game, second_player: player} = state) do
+  def handle_call({:move, player, choice}, _from, %{game: game, second_player: player} = state) do
     new_state = %{state | game: Rps.Game.second_player_choice(game, choice)}
     {:reply, get_info(new_state), new_state}
   end

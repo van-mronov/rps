@@ -24,8 +24,8 @@ defmodule Rps do
     Rps.GameServer.join(game_name, user)
   end
 
-  def game_turn(game_name, user_id, choice) do
+  def game_move(game_name, user_id, choice) do
     user = Rps.Accounts.get_user!(user_id)
-    Rps.GameServer.turn(game_name, user, String.to_atom(choice))
+    Rps.GameServer.move(game_name, user, String.to_atom(choice))
   end
 end

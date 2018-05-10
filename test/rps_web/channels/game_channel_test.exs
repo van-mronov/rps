@@ -67,13 +67,13 @@ defmodule RpsWeb.GameChannelTest do
     end
   end
 
-  describe "turn" do
+  describe "move" do
     test "pushes the current game info", context do
       {:ok, _reply, socket1} = subscribe_and_join(context.socket, GameChannel, context.topic, %{})
       assert_broadcast("game_info", %{})
       {:ok, _reply, _socket2} = join(context.second_palyer_socket, context.topic)
       assert_broadcast("game_info", %{})
-      push(socket1, "turn", %{"choice" => "rock"})
+      push(socket1, "move", %{"choice" => "rock"})
       assert_broadcast("game_info", payload)
       assert payload.current_round.first_player_choice == :rock
     end
@@ -84,11 +84,11 @@ defmodule RpsWeb.GameChannelTest do
       {:ok, _reply, socket2} = join(context.second_palyer_socket, context.topic)
       assert_broadcast("game_info", %{})
 
-      push(socket1, "turn", %{"choice" => "rock"})
+      push(socket1, "move", %{"choice" => "rock"})
       assert_broadcast("game_info", payload)
       assert payload.current_round.first_player_choice == :rock
 
-      push(socket2, "turn", %{"choice" => "paper"})
+      push(socket2, "move", %{"choice" => "paper"})
       assert_broadcast("game_info", payload)
       finished_round = List.first(payload.rounds)
       assert finished_round.second_player_choice == :paper
@@ -101,13 +101,24 @@ defmodule RpsWeb.GameChannelTest do
       {:ok, _reply, socket2} = join(context.second_palyer_socket, context.topic)
       assert_broadcast("game_info", %{})
 
-      push(socket1, "turn", %{"choice" => "rock"})
+      push(socket1, "move", %{"choice" => "rock"})
       assert_broadcast("game_info", payload)
       assert payload.current_round.first_player_choice == :rock
 
-      push(socket2, "turn", %{"choice" => "paper"})
+      push(socket2, "move", %{"choice" => "paper"})
       assert_broadcast("game_info", payload)
       assert payload.second_player.score == 1
     end
+  end
+
+  test "if user didn’t make a choice system will randomly choose one", context do
+    {:ok, _reply, _socket1} = subscribe_and_join(context.socket, GameChannel, context.topic, %{})
+    assert_broadcast("game_info", %{})
+    {:ok, _reply, _socket2} = join(context.second_palyer_socket, context.topic)
+    assert_broadcast("game_info", %{})
+    assert_broadcast("game_started", %{})
+    assert_broadcast("opponent_move", %{}, 10_500)
+    assert_broadcast("game_info", payload)
+    assert not is_nil(payload.current_round.first_player_choice)
   end
 end
