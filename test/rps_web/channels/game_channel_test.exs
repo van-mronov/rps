@@ -94,5 +94,20 @@ defmodule RpsWeb.GameChannelTest do
       assert finished_round.second_player_choice == :paper
       assert finished_round.result == :second
     end
+
+    test "of the second player updates scores", context do
+      {:ok, _reply, socket1} = subscribe_and_join(context.socket, GameChannel, context.topic, %{})
+      assert_broadcast("game_info", %{})
+      {:ok, _reply, socket2} = join(context.second_palyer_socket, context.topic)
+      assert_broadcast("game_info", %{})
+
+      push(socket1, "turn", %{"choice" => "rock"})
+      assert_broadcast("game_info", payload)
+      assert payload.current_round.first_player_choice == :rock
+
+      push(socket2, "turn", %{"choice" => "paper"})
+      assert_broadcast("game_info", payload)
+      assert payload.second_player.score == 1
+    end
   end
 end
