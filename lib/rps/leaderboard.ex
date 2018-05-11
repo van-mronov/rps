@@ -84,7 +84,8 @@ defmodule Rps.Leaderboard do
     |> Enum.map(&into_map/1)
     |> Enum.sort(
       &(Map.fetch!(&1, :won) > Map.fetch!(&2, :won) ||
-          Map.fetch!(&1, :game_played) >= Map.fetch!(&2, :game_played))
+          (Map.fetch!(&1, :won) == Map.fetch!(&2, :won) &&
+             Map.fetch!(&1, :game_played) > Map.fetch!(&2, :game_played)))
     )
   end
 

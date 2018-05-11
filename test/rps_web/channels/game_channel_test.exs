@@ -8,15 +8,17 @@ defmodule RpsWeb.GameChannelTest do
   @move_timeout_offset_ms 100
 
   setup do
+    Rps.Leaderboard.clear()
+
     user = add_user("Ivan")
     token = Phauxth.Token.sign(RpsWeb.Endpoint, user.id)
     {:ok, socket} = connect(RpsWeb.UserSocket, %{"access_token" => token})
     {:ok, game_name} = Rps.start_game(user.id)
     topic = "game:" <> game_name
 
-    second_palyer = add_user("Maria")
-    second_palyer_token = Phauxth.Token.sign(RpsWeb.Endpoint, second_palyer.id)
-    {:ok, second_palyer_socket} = connect(RpsWeb.UserSocket, %{"access_token" => second_palyer_token})
+    second_player = add_user("Maria")
+    second_player_token = Phauxth.Token.sign(RpsWeb.Endpoint, second_player.id)
+    {:ok, second_player_socket} = connect(RpsWeb.UserSocket, %{"access_token" => second_player_token})
 
     other_user = add_user("Vadim")
     other_user_token = Phauxth.Token.sign(RpsWeb.Endpoint, other_user.id)
@@ -27,8 +29,8 @@ defmodule RpsWeb.GameChannelTest do
      socket: socket,
      game_name: game_name,
      topic: topic,
-     second_palyer: second_palyer,
-     second_palyer_socket: second_palyer_socket,
+     second_player: second_player,
+     second_player_socket: second_player_socket,
      other_user: other_user,
      other_user_socket: other_user_socket}
   end
@@ -50,12 +52,12 @@ defmodule RpsWeb.GameChannelTest do
     end
 
     test "replies with status ok for the second player of the game", context do
-      {:ok, _reply, socket} = join(context.second_palyer_socket, context.topic)
+      {:ok, _reply, socket} = join(context.second_player_socket, context.topic)
       assert socket.joined
     end
 
     test "replies with status error if the third player tries to join to the game", context do
-      {:ok, _reply, _socket} = join(context.second_palyer_socket, context.topic)
+      {:ok, _reply, _socket} = join(context.second_player_socket, context.topic)
       error_message = {:error, %{reason: "Another player has already joined"}}
       assert join(context.other_user_socket, context.topic) == error_message
     end
@@ -63,7 +65,7 @@ defmodule RpsWeb.GameChannelTest do
     test "pushes the current game info after the second player joins the game", context do
       {:ok, _reply, _socket} = subscribe_and_join(context.socket, GameChannel, context.topic, %{})
       assert_broadcast("game_info", %{})
-      {:ok, _reply, _socket} = join(context.second_palyer_socket, context.topic)
+      {:ok, _reply, _socket} = join(context.second_player_socket, context.topic)
       game_info = GameServer.info(context.game_name)
       assert_push("game_info", ^game_info)
     end
@@ -73,7 +75,7 @@ defmodule RpsWeb.GameChannelTest do
     test "pushes the current game info", context do
       {:ok, _reply, socket1} = subscribe_and_join(context.socket, GameChannel, context.topic, %{})
       assert_broadcast("game_info", %{})
-      {:ok, _reply, _socket2} = join(context.second_palyer_socket, context.topic)
+      {:ok, _reply, _socket2} = join(context.second_player_socket, context.topic)
       assert_broadcast("game_info", %{})
       push(socket1, "move", %{"choice" => "rock"})
       assert_broadcast("game_info", payload)
@@ -83,7 +85,7 @@ defmodule RpsWeb.GameChannelTest do
     test "of the second player finishes the current round", context do
       {:ok, _reply, socket1} = subscribe_and_join(context.socket, GameChannel, context.topic, %{})
       assert_broadcast("game_info", %{})
-      {:ok, _reply, socket2} = join(context.second_palyer_socket, context.topic)
+      {:ok, _reply, socket2} = join(context.second_player_socket, context.topic)
       assert_broadcast("game_info", %{})
 
       push(socket1, "move", %{"choice" => "rock"})
@@ -100,7 +102,7 @@ defmodule RpsWeb.GameChannelTest do
     test "of the second player updates scores", context do
       {:ok, _reply, socket1} = subscribe_and_join(context.socket, GameChannel, context.topic, %{})
       assert_broadcast("game_info", %{})
-      {:ok, _reply, socket2} = join(context.second_palyer_socket, context.topic)
+      {:ok, _reply, socket2} = join(context.second_player_socket, context.topic)
       assert_broadcast("game_info", %{})
 
       push(socket1, "move", %{"choice" => "rock"})
@@ -117,34 +119,59 @@ defmodule RpsWeb.GameChannelTest do
     test "broadcasts `:game_over` with the game result", context do
       {:ok, _reply, socket1} = subscribe_and_join(context.socket, GameChannel, context.topic, %{})
       assert_broadcast("game_info", %{})
-      {:ok, _reply, socket2} = join(context.second_palyer_socket, context.topic)
+      {:ok, _reply, socket2} = join(context.second_player_socket, context.topic)
       assert_broadcast("game_info", %{})
       assert_broadcast("game_started", %{})
 
-      game_info =
-        Enum.reduce(1..4, %{}, fn round_number, _payload ->
-          push(socket1, "move", %{"choice" => "rock"})
+      Enum.each(1..4, fn round_number ->
+        push(socket1, "move", %{"choice" => "rock"})
+        assert_broadcast("opponent_move", %{})
+        assert_broadcast("game_info", %{})
+
+        push(socket2, "move", %{"choice" => "paper"})
+        if round_number == 4 do
+          assert_broadcast("game_over", game_info)
+          assert not is_nil(game_info.result)
+        else
           assert_broadcast("opponent_move", %{})
           assert_broadcast("game_info", %{})
+        end
+      end)
+    end
 
-          push(socket2, "move", %{"choice" => "paper"})
-          if round_number == 4 do
-            assert_broadcast("game_over", payload)
-            payload
-          else
-            assert_broadcast("opponent_move", %{})
-            assert_broadcast("game_info", %{})
-          end
-        end)
+    test "broadcasts leaderboard into lobby channel", context do
+      {:ok, _reply, socket1} = subscribe_and_join(context.socket, "game:lobby")
+      {:ok, _reply, socket1} = subscribe_and_join(socket1, GameChannel, context.topic, %{})
+      assert_broadcast("game_info", %{})
+      {:ok, _reply, socket2} = join(context.second_player_socket, context.topic)
+      assert_broadcast("game_info", %{})
+      assert_broadcast("game_started", %{})
 
-      assert not is_nil(game_info.result)
+      Enum.each(1..4, fn round_number ->
+        push(socket1, "move", %{"choice" => "rock"})
+        assert_broadcast("opponent_move", %{})
+        assert_broadcast("game_info", %{})
+
+        push(socket2, "move", %{"choice" => "paper"})
+        if round_number == 4 do
+          assert_broadcast("game_over", game_info)
+          assert game_info.result == :second
+          assert_broadcast("leaderboard", leaderboard)
+          [the_best_player, the_second_player | _tail] = leaderboard.table
+          assert the_best_player.id == context.second_player.id
+          assert the_second_player.id == context.user.id
+        else
+          assert_broadcast("opponent_move", %{})
+          assert_broadcast("game_info", %{})
+        end
+      end)
     end
   end
 
   test "if user didn’t make a choice system will randomly choose one", context do
     {:ok, _reply, _socket1} = subscribe_and_join(context.socket, GameChannel, context.topic, %{})
     assert_broadcast("game_info", %{})
-    {:ok, _reply, _socket2} = join(context.second_palyer_socket, context.topic)
+    {:ok, _reply, _socket2} = join(context.second_player_socket, context.topic)
     assert_broadcast("game_info", %{})
     assert_broadcast("game_started", %{})
     move_timeout = Application.get_env(:rps, :move_timeout)

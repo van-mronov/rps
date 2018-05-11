@@ -29,6 +29,24 @@ defmodule RpsWeb.GameChannel do
     {:noreply, socket}
   end
 
+  def handle_info({:update_leaderboard, %{result: :first} = game_info}, socket) do
+    Rps.Leaderboard.win_game(game_info.first_player, game_info.second_player)
+    RpsWeb.Endpoint.broadcast!("game:lobby", "leaderboard", %{table: Rps.Leaderboard.table()})
+    {:noreply, socket}
+  end
+
+  def handle_info({:update_leaderboard, %{result: :second} = game_info}, socket) do
+    Rps.Leaderboard.win_game(game_info.second_player, game_info.first_player)
+    RpsWeb.Endpoint.broadcast!("game:lobby", "leaderboard", %{table: Rps.Leaderboard.table()})
+    {:noreply, socket}
+  end
+
+  def handle_info({:update_leaderboard, %{result: :draw} = game_info}, socket) do
+    Rps.Leaderboard.draw_game(game_info.first_player, game_info.second_player)
+    RpsWeb.Endpoint.broadcast!("game:lobby", "leaderboard", %{table: Rps.Leaderboard.table()})
+    {:noreply, socket}
+  end
+
   def handle_in("move", %{"choice" => choice}, socket) do
     Process.cancel_timer(socket.assigns.timer)
     "game:" <> game_name = socket.topic
@@ -66,6 +84,7 @@ defmodule RpsWeb.GameChannel do
         broadcast!(socket, "game_info", game_info)
 
       game_info ->
+        send(self(), {:update_leaderboard, game_info})
         broadcast!(socket, "game_over", game_info)
     end
   end
