@@ -65,14 +65,14 @@ defmodule Rps.Accounts do
     %User{}
     |> User.changeset(attrs)
     |> Repo.insert()
-    # |> case do
-    #   {:ok, user} ->
-    #     :ets.insert(:user_results, {user.id, user.name, %{game_count: 0, win_count: 0, loss_count: 0, draw_count: 0}})
-    #     {:ok, user}
-    #
-    #   error ->
-    #     error
-    # end
+    |> case do
+      {:ok, user} ->
+        Rps.Leaderboard.new_user(user)
+        {:ok, user}
+
+      error ->
+        error
+    end
   end
 
   @doc """

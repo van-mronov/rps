@@ -86,14 +86,13 @@ defmodule Rps.LeaderboardTest do
   end
 
   describe "table" do
-    test "is sorted by numbers of wins", %{winner: winner, loser: loser, other: other} do
+    test "is sorted by numbers of wins", %{winner: winner, loser: loser} do
       Leaderboard.win_game(winner, loser)
       Leaderboard.draw_game(winner, loser)
       Leaderboard.win_game(winner, loser)
       winner_results = Leaderboard.user_results(winner)
       loser_results = Leaderboard.user_results(loser)
-      other_results = Leaderboard.user_results(other)
-      assert Leaderboard.table() == [winner_results, loser_results, other_results]
+      assert [^winner_results, ^loser_results | _tail] = Leaderboard.table()
     end
 
     test "is sorted by numbers of played games in case of equal wins", context do
@@ -107,9 +106,8 @@ defmodule Rps.LeaderboardTest do
       winner_results = Leaderboard.user_results(context.winner)
       other_results = Leaderboard.user_results(context.other)
       loser_results = Leaderboard.user_results(context.loser)
-      leaderboard = [winner_results, other_results, loser_results]
 
-      assert Leaderboard.table() == leaderboard
+      assert [^winner_results, ^other_results, ^loser_results | _tail] = Leaderboard.table()
     end
   end
 end
