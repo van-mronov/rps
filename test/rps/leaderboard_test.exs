@@ -12,7 +12,10 @@ defmodule Rps.LeaderboardTest do
     loser = %User{id: 2, name: "Vadim"}
     Leaderboard.new_user(loser)
 
-    {:ok, winner: winner, loser: loser}
+    other = %User{id: 3, name: "Ivan"}
+    Leaderboard.new_user(other)
+
+    {:ok, winner: winner, loser: loser, other: other}
   end
 
   describe "user_results" do
@@ -79,6 +82,34 @@ defmodule Rps.LeaderboardTest do
       Leaderboard.draw_game(user1, user2)
       user_results = Leaderboard.user_results(user2)
       assert user_results.draw == draw + 1
+    end
+  end
+
+  describe "table" do
+    test "is sorted by numbers of wins", %{winner: winner, loser: loser, other: other} do
+      Leaderboard.win_game(winner, loser)
+      Leaderboard.draw_game(winner, loser)
+      Leaderboard.win_game(winner, loser)
+      winner_results = Leaderboard.user_results(winner)
+      loser_results = Leaderboard.user_results(loser)
+      other_results = Leaderboard.user_results(other)
+      assert Leaderboard.table() == [winner_results, loser_results, other_results]
+    end
+
+    test "is sorted by numbers of played games in case of equal wins", context do
+      Leaderboard.win_game(context.winner, context.loser)
+      Leaderboard.draw_game(context.winner, context.loser)
+      Leaderboard.win_game(context.winner, context.loser)
+
+      Leaderboard.win_game(context.other, context.loser)
+      Leaderboard.win_game(context.other, context.loser)
+
+      winner_results = Leaderboard.user_results(context.winner)
+      other_results = Leaderboard.user_results(context.other)
+      loser_results = Leaderboard.user_results(context.loser)
+      leaderboard = [winner_results, other_results, loser_results]
+
+      assert Leaderboard.table() == leaderboard
     end
   end
 end
