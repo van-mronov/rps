@@ -51,4 +51,34 @@ defmodule Rps.LeaderboardTest do
       assert user_results.lost == lost + 1
     end
   end
+
+  describe "draw_game" do
+    test "updates game_played count of the first user", %{winner: user1, loser: user2} do
+      %{game_played: game_played} = Leaderboard.user_results(user1)
+      Leaderboard.draw_game(user1, user2)
+      user_results = Leaderboard.user_results(user1)
+      assert user_results.game_played == game_played + 1
+    end
+
+    test "updates game_played count of the second user", %{winner: user1, loser: user2} do
+      %{game_played: game_played} = Leaderboard.user_results(user2)
+      Leaderboard.draw_game(user1, user2)
+      user_results = Leaderboard.user_results(user2)
+      assert user_results.game_played == game_played + 1
+    end
+
+    test "updates draw count of the first user", %{winner: user1, loser: user2} do
+      %{draw: draw} = Leaderboard.user_results(user1)
+      Leaderboard.draw_game(user1, user2)
+      user_results = Leaderboard.user_results(user1)
+      assert user_results.draw == draw + 1
+    end
+
+    test "updates draw count of the second user", %{winner: user1, loser: user2} do
+      %{draw: draw} = Leaderboard.user_results(user2)
+      Leaderboard.draw_game(user1, user2)
+      user_results = Leaderboard.user_results(user2)
+      assert user_results.draw == draw + 1
+    end
+  end
 end
