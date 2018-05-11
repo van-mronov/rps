@@ -9,6 +9,8 @@ defmodule Rps.Application do
       Rps.GameSupervisor
     ]
 
+    Rps.Leaderboard.new()
+
     opts = [strategy: :one_for_one, name: Rps.Supervisor]
     Supervisor.start_link(children, opts)
   end

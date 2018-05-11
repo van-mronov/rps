@@ -17,14 +17,14 @@ defmodule Rps.GameServer do
   end
 
   @doc """
-  Removes a tuple used to register and lookup a game server process by name.
+  Returns a tuple used to register and lookup a game server process by name.
   """
   def via_tuple(game_name) do
     {:via, Registry, {Rps.GameRegistry, game_name}}
   end
 
   @doc """
-  Removes `true` if the game server process registered under the
+  Returns `true` if the game server process registered under the
   given `game_name`, or `false` if no process is registered.
   """
   def alive?(game_name) do
@@ -41,7 +41,7 @@ defmodule Rps.GameServer do
   end
 
   @doc """
-  Removes the info of the game registered under the given `game_name`.
+  Returns the info of the game registered under the given `game_name`.
   """
   def info(game_name) do
     GenServer.call(via_tuple(game_name), :info)
