@@ -60,9 +60,14 @@ defmodule RpsWeb.GameChannel do
   end
 
   defp do_move(game_name, choice, socket) do
-    game_info = Rps.game_move(game_name, socket.assigns.user_id, choice)
-    broadcast_from!(socket, "opponent_move", %{})
-    broadcast!(socket, "game_info", game_info)
+    case Rps.game_move(game_name, socket.assigns.user_id, choice) do
+      %{result: nil} = game_info ->
+        broadcast_from!(socket, "opponent_move", %{})
+        broadcast!(socket, "game_info", game_info)
+
+      game_info ->
+        broadcast!(socket, "game_over", game_info)
+    end
   end
 
   defp random_choice do

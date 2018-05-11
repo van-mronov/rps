@@ -113,6 +113,34 @@ defmodule RpsWeb.GameChannelTest do
     end
   end
 
+  describe "move of the second player of the last round" do
+    test "broadcasts `:game_over` with the game result", context do
+      {:ok, _reply, socket1} = subscribe_and_join(context.socket, GameChannel, context.topic, %{})
+      assert_broadcast("game_info", %{})
+      {:ok, _reply, socket2} = join(context.second_palyer_socket, context.topic)
+      assert_broadcast("game_info", %{})
+      assert_broadcast("game_started", %{})
+
+      game_info =
+        Enum.reduce(1..4, %{}, fn round_number, _payload ->
+          push(socket1, "move", %{"choice" => "rock"})
+          assert_broadcast("opponent_move", %{})
+          assert_broadcast("game_info", %{})
+
+          push(socket2, "move", %{"choice" => "paper"})
+          if round_number == 4 do
+            assert_broadcast("game_over", payload)
+            payload
+          else
+            assert_broadcast("opponent_move", %{})
+            assert_broadcast("game_info", %{})
+          end
+        end)
+
+      assert not is_nil(game_info.result)
+    end
+  end
+
   test "if user didn’t make a choice system will randomly choose one", context do
     {:ok, _reply, _socket1} = subscribe_and_join(context.socket, GameChannel, context.topic, %{})
     assert_broadcast("game_info", %{})
