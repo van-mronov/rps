@@ -6,6 +6,8 @@ defmodule Rps.LeaderboardTest do
   alias Rps.Accounts.User
 
   setup do
+    Leaderboard.clear()
+
     winner = %User{id: 1, name: "Maria"}
     Leaderboard.new_user(winner)
 

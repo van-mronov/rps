@@ -88,6 +88,12 @@ defmodule Rps.Leaderboard do
     )
   end
 
+  @doc """
+  Deletes all entries from leaderboard.
+  """
+  @spec clear :: true
+  def clear, do: :ets.delete_all_objects(:user_results)
+
   @spec into_map(raw_item) :: item
   def into_map({id, name, game_played, won, lost, draw}) do
     %{id: id, name: name, game_played: game_played, won: won, lost: lost, draw: draw}
