@@ -6,12 +6,11 @@ defmodule Rps.Game do
   alias Rps.{Game, Round}
 
   defstruct current_round: %Round{},
+            duration: Application.get_env(:rps, :game_duration, 10),
             rounds: [],
             first_player_score: 0,
             second_player_score: 0,
             result: nil
-
-  @duration 10
 
   @doc """
   Creates a new game.
@@ -96,8 +95,8 @@ defmodule Rps.Game do
     game
   end
 
-  defp finish_round(%Game{current_round: round, rounds: rounds} = game)
-       when length(rounds) == @duration - 1 do
+  defp finish_round(%Game{current_round: round, rounds: rounds, duration: duration} = game)
+       when length(rounds) == duration - 1 do
     %{game | current_round: nil, rounds: [round | rounds]}
   end
 
@@ -105,7 +104,8 @@ defmodule Rps.Game do
     %{game | current_round: %Round{}, rounds: [round | rounds]}
   end
 
-  defp maybe_update_result(%Game{rounds: rounds} = game) when length(rounds) < @duration do
+  defp maybe_update_result(%Game{rounds: rounds, duration: duration} = game)
+       when length(rounds) < duration do
     game
   end
 

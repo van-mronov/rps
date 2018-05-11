@@ -9,7 +9,8 @@ use Mix.Config
 config :rps,
   namespace: Rps,
   ecto_repos: [Rps.Repo],
-  move_timeout: :timer.seconds(10)
+  move_timeout: :timer.seconds(10),
+  game_duration: 10
 
 # Configures the endpoint
 config :rps, RpsWeb.Endpoint,

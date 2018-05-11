@@ -43,7 +43,7 @@ defmodule Rps.GameTest do
   describe "second_player_choice/2 of the 10th round" do
     test "finishes the game" do
       game =
-        Enum.reduce(1..10, Rps.Game.new(), fn _round_number, game ->
+        Enum.reduce(1..4, Rps.Game.new(), fn _round_number, game ->
           game
           |> Rps.Game.first_player_choice(:rock)
           |> Rps.Game.second_player_choice(:scissors)
@@ -54,24 +54,6 @@ defmodule Rps.GameTest do
 
     test "marks the first player as a winner if he/she won more rounds than the second player" do
       game =
-        Enum.reduce(1..6, Rps.Game.new(), fn _round_number, game ->
-          game
-          |> Rps.Game.first_player_choice(:rock)
-          |> Rps.Game.second_player_choice(:scissors)
-        end)
-
-      game =
-        Enum.reduce(1..4, game, fn _round_number, game ->
-          game
-          |> Rps.Game.first_player_choice(:paper)
-          |> Rps.Game.second_player_choice(:scissors)
-        end)
-
-      assert game.result == :first
-    end
-
-    test "marks the second player as a winner if he/she won more rounds than the first player" do
-      game =
         Enum.reduce(1..3, Rps.Game.new(), fn _round_number, game ->
           game
           |> Rps.Game.first_player_choice(:rock)
@@ -79,7 +61,21 @@ defmodule Rps.GameTest do
         end)
 
       game =
-        Enum.reduce(1..7, game, fn _round_number, game ->
+        game
+        |> Rps.Game.first_player_choice(:paper)
+        |> Rps.Game.second_player_choice(:scissors)
+
+      assert game.result == :first
+    end
+
+    test "marks the second player as a winner if he/she won more rounds than the first player" do
+      game =
+        Rps.Game.new()
+        |> Rps.Game.first_player_choice(:rock)
+        |> Rps.Game.second_player_choice(:scissors)
+
+      game =
+        Enum.reduce(1..3, game, fn _round_number, game ->
           game
           |> Rps.Game.first_player_choice(:paper)
           |> Rps.Game.second_player_choice(:scissors)
@@ -90,14 +86,14 @@ defmodule Rps.GameTest do
 
     test "sets the result of the game as `:draw` if both players won 5 rounds" do
       game =
-        Enum.reduce(1..5, Rps.Game.new(), fn _round_number, game ->
+        Enum.reduce(1..2, Rps.Game.new(), fn _round_number, game ->
           game
           |> Rps.Game.first_player_choice(:rock)
           |> Rps.Game.second_player_choice(:scissors)
         end)
 
       game =
-        Enum.reduce(1..5, game, fn _round_number, game ->
+        Enum.reduce(1..2, game, fn _round_number, game ->
           game
           |> Rps.Game.first_player_choice(:paper)
           |> Rps.Game.second_player_choice(:scissors)
