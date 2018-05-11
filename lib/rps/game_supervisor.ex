@@ -25,4 +25,10 @@ defmodule Rps.GameSupervisor do
 
     DynamicSupervisor.start_child(__MODULE__, child_spec)
   end
+
+  def current_games do
+    __MODULE__
+    |> Supervisor.which_children()
+    |> Enum.map(fn {_id, pid, _type, _modules} -> GenServer.call(pid, :info) end)
+  end
 end

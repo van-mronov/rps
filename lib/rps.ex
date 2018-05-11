@@ -28,4 +28,8 @@ defmodule Rps do
     user = Rps.Accounts.get_user!(user_id)
     Rps.GameServer.move(game_name, user, String.to_atom(choice))
   end
+
+  def game_list do
+    %{games: Rps.GameSupervisor.current_games()}
+  end
 end

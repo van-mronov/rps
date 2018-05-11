@@ -58,8 +58,7 @@ defmodule Rps.GameServer do
   # Server Callbacks
 
   def init({game_name, user}) do
-    Logger.info("Spawned game server process named '#{game_name}'.")
-    {:ok, %{game: Rps.Game.new(), first_player: user, second_player: nil, move: :first}}
+    {:ok, %{name: game_name, game: Rps.Game.new(), first_player: user, second_player: nil}}
   end
 
   def handle_call(:info, _from, state) do
@@ -68,10 +67,13 @@ defmodule Rps.GameServer do
 
   def handle_call({:join, player}, _from, %{first_player: player} = state),
     do: {:reply, {:ok, :first}, state}
+
   def handle_call({:join, player}, _from, %{second_player: player} = state),
     do: {:reply, {:ok, :second}, state}
+
   def handle_call({:join, player}, _from, %{second_player: nil} = state),
     do: {:reply, {:ok, :second}, %{state | second_player: player}}
+
   def handle_call({:join, _player}, _from, state),
     do: {:reply, {:error, :another_player_already_joined}, state}
 
@@ -85,16 +87,27 @@ defmodule Rps.GameServer do
     {:reply, get_info(new_state), new_state}
   end
 
-  defp get_info(%{game: game, first_player: first_player, second_player: second_player}) do
+  defp get_info(%{name: name, game: game} = state) do
     %{
-      current_round: game.current_round,
-      rounds: game.rounds,
-      first_player: player_info(first_player, game.first_player_score),
-      second_player: player_info(second_player, game.second_player_score),
+      name: name,
+      current_round: round_info(game.current_round),
+      rounds: Enum.map(game.rounds, &round_info/1),
+      first_player: player_info(state.first_player, game.first_player_score),
+      second_player: player_info(state.second_player, game.second_player_score),
       result: game.result
     }
   end
 
   defp player_info(nil, _score), do: nil
   defp player_info(player, score), do: %{id: player.id, name: player.name, score: score}
+
+  defp round_info(nil), do: nil
+
+  defp round_info(round) do
+    %{
+      first_player_choice: round.first_player_choice,
+      second_player_choice: round.second_player_choice,
+      result: round.result
+    }
+  end
 end
